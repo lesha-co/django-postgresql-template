@@ -1,0 +1,45 @@
+version: '3'
+name: 'application-template'
+services:        
+  nginx:
+      image: nginx
+      depends_on:
+        - django
+      ports:
+        - "1180:80"
+        - "11443:443"
+      networks:
+        - frontend
+      volumes:
+        - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  postgres:
+    image: postgres
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydatabase"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    environment:
+      # UNSAFE: это "дефолтный" юзер, который нужен для создания всех остальных
+      #         нужно подключиться к базе, создать юзера для джанги и использовать его
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    networks:
+      - db
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+  django:
+      networks:
+        - db
+        - frontend
+      depends_on:
+        postgres:
+            condition: service_healthy
+      build: .
+      command: python manage.py runserver 0.0.0.0:8000
+
+networks:
+  db:
+  frontend:

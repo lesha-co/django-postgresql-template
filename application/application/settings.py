@@ -49,6 +49,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    # this is our *external* address
+    'http://localhost:1180',
+    'https://localhost:11443',
+]
+
 ROOT_URLCONF = 'application.urls'
 
 TEMPLATES = [
@@ -75,8 +81,12 @@ WSGI_APPLICATION = 'application.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydatabase',
+        'USER': 'myuser',
+        'PASSWORD': 'mypassword',
+        'HOST': 'postgres',
+        'PORT': '5432',
     }
 }
 
