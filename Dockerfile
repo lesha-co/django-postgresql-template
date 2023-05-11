@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the project code into the container
 COPY ./application /code/
+COPY uwsgi.ini /code
 
 # Set environment variables
 ENV DJANGO_SETTINGS_MODULE=application.settings
